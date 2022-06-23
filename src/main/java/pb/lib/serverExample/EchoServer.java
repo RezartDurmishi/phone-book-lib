@@ -38,7 +38,7 @@ public class EchoServer extends Server  //todo: EXTENDS
         System.out.println("Cleaning up");
     }
 
-    static public void main(String args[]) throws Exception {
+    static public void main(String[] args) throws Exception {
         // Grab the port number from the command-line
         int port = 1;
 

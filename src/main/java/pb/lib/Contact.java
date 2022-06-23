@@ -1,16 +1,59 @@
 package pb.lib;
 
-abstract public class Contact {
+import java.util.UUID;
+
+//POJO
+class Contact {
+
+    //id
+    private UUID id;
+
     // first and last name
     private String fullName;
 
-    // Work, Cellphone or Home //todo: enum
+    // Work, Cellphone or Home
+    // todo: enum
     private String type;
 
-    // Contact no //todo: unique
+    // Contact no
+    // todo: unique validation
     private String number;
 
-    public void create(String fullName, String type, String number){
+    protected Contact() {
+        setId(UUID.randomUUID());
+    }
 
+
+    public UUID getId() {
+        return id;
+    }
+
+    //ID cannot be set by user
+    private void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }
