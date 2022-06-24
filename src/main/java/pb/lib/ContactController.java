@@ -13,12 +13,14 @@ public class ContactController { //todo: make it abstract
     //file path
     private final String path = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.json";
     private final ObjectMapper mapper = new ObjectMapper();
+    private final String CONTACTS = "contacts";
 
     //create a new contact
     public void create(Contact contact) {
         Map<String, Object> contacts = new HashMap<>();
         List<Contact> contactsList = new ArrayList<>();
-        contacts.put("contacts", contactsList.add(contact));
+        contactsList.add(contact);
+        contacts.put(CONTACTS, contactsList);
 
         //only on file initialization
         if (!new File(path).isFile()) {
@@ -27,34 +29,60 @@ public class ContactController { //todo: make it abstract
         }
 
         //read file and append new values
-        Map<String, Object> allContacts = readFromFile();
-        List<Contact> contactList = mapper.convertValue(
-                allContacts.get("contacts"),
-                new TypeReference<>() {
-                });
+        Map<String, Object> contactsJson = readFromFile();
+        List<Contact> contactList = getContactList(contactsJson);
+        contactList.add(contact);
 
-        allContacts.put("contacts", contactList.add(contact));
-        writeToFile(allContacts);
+        contactsJson.put(CONTACTS, contactList);
+        writeToFile(contactsJson);
+    }
+
+    //update contact by id
+    public void update(Contact contact, String contactId) {
+        UUID id = getUuidFromString(contactId);
+
+        if (!new File(path).isFile()) {
+            return;
+        }
+
+        Map<String, Object> contactsJson = readFromFile();
+        List<Contact> contactList = getContactList(contactsJson);
+
+        if (contactList.isEmpty()) {
+            return;
+        }
+
+        Optional<Contact> contactToUpdate = contactList.stream()
+                .filter(contact1 -> contact1.getId().equals(id)).toList().stream().findFirst();
+
+        if (contactToUpdate.isPresent()) {
+            contactList.set(contactList.indexOf(contactToUpdate.get()), contact);
+            contactsJson.put(CONTACTS, contactList);
+            writeToFile(contactsJson);
+        }
     }
 
     //delete contact by uuid
     public void delete(String contactId) {
-        UUID id = UUID.fromString(contactId);
+        UUID id = getUuidFromString(contactId);
+
         if (!new File(path).isFile()) {
             return;
         }
 
         Map<String, Object> allContacts = readFromFile();
-        List<Contact> contactList = mapper.convertValue(
-                allContacts.get("contacts"), new TypeReference<>() {
-                });
+        List<Contact> contactList = getContactList(allContacts);
+
+        if (contactList.isEmpty()) {
+            return;
+        }
 
         Optional<Contact> contactToDelete = contactList.stream()
                 .filter(contact -> contact.getId().equals(id)).toList().stream().findFirst();
 
         if (contactToDelete.isPresent()) {
             contactList.remove(contactToDelete.get());
-            allContacts.put("contacts", contactList);
+            allContacts.put(CONTACTS, contactList);
             writeToFile(allContacts);
         }
     }
@@ -77,4 +105,13 @@ public class ContactController { //todo: make it abstract
         }
     }
 
+    private UUID getUuidFromString(String contactId) {
+        return UUID.fromString(contactId);
+    }
+
+    private List<Contact> getContactList(Map<String, Object> allContacts) {
+        return mapper.convertValue(
+                allContacts.get(CONTACTS), new TypeReference<>() {
+                });
+    }
 }
