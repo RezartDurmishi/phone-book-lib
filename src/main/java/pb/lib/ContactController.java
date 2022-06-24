@@ -4,14 +4,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ContactController { //todo: make it abstract
 
     //file path
     private final String path = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.json";
+    private final String binaryFilePath = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.bin";
     private final ObjectMapper mapper = new ObjectMapper();
     private final String CONTACTS = "contacts";
 
@@ -23,18 +27,18 @@ public class ContactController { //todo: make it abstract
         contacts.put(CONTACTS, contactsList);
 
         //only on file initialization
-        if (!new File(path).isFile()) {
-            writeToFile(contacts);
+        if (!Paths.get(binaryFilePath).toFile().exists()){
+            writeToBinary(contacts);
             return;
         }
 
         //read file and append new values
-        Map<String, Object> contactsJson = readFromFile();
-        List<Contact> contactList = getContactList(contactsJson);
-        contactList.add(contact);
-
-        contactsJson.put(CONTACTS, contactList);
-        writeToFile(contactsJson);
+//        Map<String, Object> contactsJson = readFromFile();
+//        List<Contact> contactList = getContactList(contactsJson);
+//        contactList.add(contact);
+//
+//        contactsJson.put(CONTACTS, contactList);
+//        writeToFile(contactsJson);
     }
 
     //update contact by id
@@ -100,6 +104,19 @@ public class ContactController { //todo: make it abstract
     private void writeToFile(Map<String, Object> contact) {
         try {
             mapper.writeValue(new FileWriter(path), contact);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeToBinary(Map<String, Object> contact){
+        File file = new File(binaryFilePath);
+        byte[] data = contact.toString().getBytes(StandardCharsets.UTF_8);
+
+        try (FileOutputStream fos = new FileOutputStream(file))
+        {
+            fos.write(data);
+            System.out.println("Successfully written data to the file");
         } catch (IOException e) {
             e.printStackTrace();
         }
