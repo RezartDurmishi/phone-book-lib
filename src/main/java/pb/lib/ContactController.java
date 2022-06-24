@@ -3,19 +3,17 @@ package pb.lib;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class ContactController { //todo: make it abstract
+public class ContactController {
 
-    //file path
-    private final String path = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.json";
+    //file paths
+    private final String jsonFilePath = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.json";
     private final String binaryFilePath = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.bin";
+
     private final ObjectMapper mapper = new ObjectMapper();
     private final String CONTACTS = "contacts";
 
@@ -27,29 +25,29 @@ public class ContactController { //todo: make it abstract
         contacts.put(CONTACTS, contactsList);
 
         //only on file initialization
-        if (!Paths.get(binaryFilePath).toFile().exists()){
-            writeToBinary(contacts);
+        if (!Paths.get(jsonFilePath).toFile().exists()) {
+            writeToJson(contacts);
             return;
         }
 
         //read file and append new values
-//        Map<String, Object> contactsJson = readFromFile();
-//        List<Contact> contactList = getContactList(contactsJson);
-//        contactList.add(contact);
-//
-//        contactsJson.put(CONTACTS, contactList);
-//        writeToFile(contactsJson);
+        Map<String, Object> contactsJson = readFromJson();
+        List<Contact> contactList = getContactList(contactsJson);
+        contactList.add(contact);
+
+        contactsJson.put(CONTACTS, contactList);
+        writeToJson(contactsJson);
     }
 
     //update contact by id
     public void update(Contact contact, String contactId) {
         UUID id = getUuidFromString(contactId);
 
-        if (!new File(path).isFile()) {
+        if (!new File(jsonFilePath).isFile()) {
             return;
         }
 
-        Map<String, Object> contactsJson = readFromFile();
+        Map<String, Object> contactsJson = readFromJson();
         List<Contact> contactList = getContactList(contactsJson);
 
         if (contactList.isEmpty()) {
@@ -62,7 +60,7 @@ public class ContactController { //todo: make it abstract
         if (contactToUpdate.isPresent()) {
             contactList.set(contactList.indexOf(contactToUpdate.get()), contact);
             contactsJson.put(CONTACTS, contactList);
-            writeToFile(contactsJson);
+            writeToJson(contactsJson);
         }
     }
 
@@ -70,11 +68,11 @@ public class ContactController { //todo: make it abstract
     public void delete(String contactId) {
         UUID id = getUuidFromString(contactId);
 
-        if (!new File(path).isFile()) {
+        if (!new File(jsonFilePath).isFile()) {
             return;
         }
 
-        Map<String, Object> allContacts = readFromFile();
+        Map<String, Object> allContacts = readFromJson();
         List<Contact> contactList = getContactList(allContacts);
 
         if (contactList.isEmpty()) {
@@ -87,39 +85,50 @@ public class ContactController { //todo: make it abstract
         if (contactToDelete.isPresent()) {
             contactList.remove(contactToDelete.get());
             allContacts.put(CONTACTS, contactList);
-            writeToFile(allContacts);
+            writeToJson(allContacts);
         }
     }
 
-    private Map<String, Object> readFromFile() {
+    private Map<String, Object> readFromJson() {
         Map<String, Object> existingContacts = null;
         try {
-            existingContacts = mapper.readValue(new File(path), HashMap.class);
+            existingContacts = mapper.readValue(new File(jsonFilePath), HashMap.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return existingContacts;
     }
 
-    private void writeToFile(Map<String, Object> contact) {
+    private void writeToJson(Map<String, Object> contact) {
         try {
-            mapper.writeValue(new FileWriter(path), contact);
+            mapper.writeValue(new FileWriter(jsonFilePath), contact);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void writeToBinary(Map<String, Object> contact){
+    private void writeToBinary(Map<String, Object> contact) {
         File file = new File(binaryFilePath);
         byte[] data = contact.toString().getBytes(StandardCharsets.UTF_8);
 
-        try (FileOutputStream fos = new FileOutputStream(file))
-        {
-            fos.write(data);
-            System.out.println("Successfully written data to the file");
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            ObjectOutputStream outputStream = new ObjectOutputStream(fos);
+            outputStream.write(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Object readFromBinary() {
+        Object contacts = null;
+        try (FileInputStream fileInputStreams = new FileInputStream(binaryFilePath)) {
+            ObjectInputStream inputStream = new ObjectInputStream(fileInputStreams);
+
+            contacts = inputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return contacts;
     }
 
     private UUID getUuidFromString(String contactId) {
