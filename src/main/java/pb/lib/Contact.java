@@ -3,7 +3,7 @@ package pb.lib;
 import java.util.UUID;
 
 //POJO
-class Contact {
+public class Contact {
 
     //id
     private UUID id;
@@ -16,10 +16,10 @@ class Contact {
     private String type;
 
     // Contact no
-    // todo: unique validation
+    // todo: number must be unique
     private String number;
 
-    protected Contact() {
+    public Contact() {
         setId(UUID.randomUUID());
     }
 

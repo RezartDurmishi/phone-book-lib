@@ -8,11 +8,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class ContactController {
+public final class ContactController {
 
     //file paths
-    private final String jsonFilePath = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.json";
-    private final String binaryFilePath = "C:\\Users\\user\\IdeaProjects\\PhoneBookLib\\contacts.bin";
+    private final String jsonFilePath = System.getProperty("user.dir") + "\\contacts.json";
+    private final String binaryFilePath = System.getProperty("user.dir") + "\\contacts.bin";
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final String CONTACTS = "contacts";
@@ -54,8 +54,7 @@ public class ContactController {
             return;
         }
 
-        Optional<Contact> contactToUpdate = contactList.stream()
-                .filter(contact1 -> contact1.getId().equals(id)).toList().stream().findFirst();
+        Optional<Contact> contactToUpdate = contactList.stream().filter(contact1 -> contact1.getId().equals(id)).toList().stream().findFirst();
 
         if (contactToUpdate.isPresent()) {
             contactList.set(contactList.indexOf(contactToUpdate.get()), contact);
@@ -79,8 +78,7 @@ public class ContactController {
             return;
         }
 
-        Optional<Contact> contactToDelete = contactList.stream()
-                .filter(contact -> contact.getId().equals(id)).toList().stream().findFirst();
+        Optional<Contact> contactToDelete = contactList.stream().filter(contact -> contact.getId().equals(id)).toList().stream().findFirst();
 
         if (contactToDelete.isPresent()) {
             contactList.remove(contactToDelete.get());
@@ -119,7 +117,7 @@ public class ContactController {
         }
     }
 
-    public Object readFromBinary() {
+    private Object readFromBinary() {
         Object contacts = null;
         try (FileInputStream fileInputStreams = new FileInputStream(binaryFilePath)) {
             ObjectInputStream inputStream = new ObjectInputStream(fileInputStreams);
@@ -136,8 +134,7 @@ public class ContactController {
     }
 
     private List<Contact> getContactList(Map<String, Object> allContacts) {
-        return mapper.convertValue(
-                allContacts.get(CONTACTS), new TypeReference<>() {
-                });
+        return mapper.convertValue(allContacts.get(CONTACTS), new TypeReference<>() {
+        });
     }
 }
