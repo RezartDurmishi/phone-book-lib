@@ -59,6 +59,10 @@ public final class ContactController {
     public void update(Contact contact, String contactId) {
         UUID id = getUuidFromString(contactId);
 
+        if (!isValidContact(contact)){
+            return;
+        }
+
         //set the existing id before updating
         contact.setId(id);
 

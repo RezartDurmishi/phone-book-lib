@@ -1,6 +1,6 @@
-C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\serverExample\EchoServer.java
-C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\ContactController.java
-C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\EchoContact.java
-C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\serverExample\Reporter.java
-C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\Contact.java
-C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\serverExample\Server.java
+C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\util\Utils.java
+C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\validator\Valid.java
+C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\type\ContactType.java
+C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\controller\Contact.java
+C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\constants\Keyword.java
+C:\Users\user\IdeaProjects\PhoneBookLib\src\main\java\pb\lib\controller\ContactController.java

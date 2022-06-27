@@ -4,6 +4,8 @@ import pb.lib.type.ContactType;
 
 import java.util.UUID;
 
+import static pb.lib.validator.Valid.isValidContactType;
+
 /**
  * Contact model
  */
@@ -19,7 +21,7 @@ public final class Contact {
     private ContactType type;
 
     // Contact no
-    // todo: number must be unique
+    // todo: number must be unique ?
     private String number;
 
     public Contact() {
@@ -57,6 +59,10 @@ public final class Contact {
     }
 
     public void setType(String type) {
+        if (!isValidContactType(type)){
+            this.type = null;
+            return;
+        }
         this.type = ContactType.valueOf(type);
     }
 

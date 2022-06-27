@@ -5,6 +5,8 @@ import pb.lib.type.ContactType;
 
 import java.util.Arrays;
 
+//import static pb.lib.type.ContactType.isValidContactType;
+
 public class Valid {
 
     /**
@@ -39,7 +41,12 @@ public class Valid {
             return false;
         }
 
-        if (!isValidContactType(contact.getType().toString())) {
+//        if (!isValidContactType(contact.getType().toString())) {
+//            System.out.println("Please enter a valid type. e.g Work, Cellphone or Home");
+//            return false;
+//        }
+
+        if (contact.getType() == null) {
             System.out.println("Please enter a valid type. e.g Work, Cellphone or Home");
             return false;
         }
