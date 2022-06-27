@@ -4,10 +4,18 @@ import pb.lib.controller.Contact;
 import pb.lib.type.ContactType;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-//import static pb.lib.type.ContactType.isValidContactType;
-
+/**
+ * Validation class
+ */
 public class Valid {
+
+    /**
+     * Logger instance
+     */
+    private static final Logger LOGGER = Logger.getLogger("InfoLogging");
 
     /**
      * Checks if number is valid
@@ -37,17 +45,12 @@ public class Valid {
      */
     public static boolean isValidContact(Contact contact) {
         if (!isValidNumber(contact.getNumber())) {
-            System.out.println("Please enter a valid number. e.g 0691234644");
+            LOGGER.log(Level.SEVERE, "Please enter a valid number. e.g 0691234644");
             return false;
         }
 
-//        if (!isValidContactType(contact.getType().toString())) {
-//            System.out.println("Please enter a valid type. e.g Work, Cellphone or Home");
-//            return false;
-//        }
-
         if (contact.getType() == null) {
-            System.out.println("Please enter a valid type. e.g Work, Cellphone or Home");
+            LOGGER.log(Level.SEVERE, "Please enter a valid type. e.g Work, Cellphone or Home");
             return false;
         }
         return true;

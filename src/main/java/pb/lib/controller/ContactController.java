@@ -11,27 +11,42 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static pb.lib.constants.Keyword.CONTACTS;
 import static pb.lib.util.Utils.getContactList;
 import static pb.lib.util.Utils.getUuidFromString;
-import static pb.lib.validator.Valid.*;
+import static pb.lib.validator.Valid.isValidContact;
 
 /**
  * Contact controller
  */
 public final class ContactController {
 
-    //file paths
+    /**
+     * Logger instance
+     */
+    private static final Logger LOGGER = Logger.getLogger("InfoLogging");
+
+    /**
+     * file paths
+     */
     private final String jsonFilePath = System.getProperty("user.dir") + "\\contacts.json";
     private final String binaryFilePath = System.getProperty("user.dir") + "\\contacts.bin";
 
+    /**
+     * ObjectMapper instance
+     */
     private final ObjectMapper mapper = new ObjectMapper();
 
-    //create a new contact
+    /**
+     * create a new contact
+     *
+     * @param contact Contact
+     */
     public void create(Contact contact) {
 
-        if (!isValidContact(contact)){
+        if (!isValidContact(contact)) {
             return;
         }
 
@@ -53,13 +68,19 @@ public final class ContactController {
 
         contactsJson.put(CONTACTS, contactList);
         writeToJson(contactsJson);
+        LOGGER.info("New contact created successfully.");
     }
 
-    //update contact by id
+    /**
+     * update contact by id
+     *
+     * @param contact   Contact
+     * @param contactId String
+     */
     public void update(Contact contact, String contactId) {
         UUID id = getUuidFromString(contactId);
 
-        if (!isValidContact(contact)){
+        if (!isValidContact(contact)) {
             return;
         }
 
@@ -83,10 +104,15 @@ public final class ContactController {
             contactList.set(contactList.indexOf(contactToUpdate.get()), contact);
             contactsJson.put(CONTACTS, contactList);
             writeToJson(contactsJson);
+            LOGGER.info("Contact updated successfully.");
         }
     }
 
-    //delete contact by uuid
+    /**
+     * delete contact by uuid
+     *
+     * @param contactId string
+     */
     public void delete(String contactId) {
         UUID id = getUuidFromString(contactId);
 
@@ -110,6 +136,11 @@ public final class ContactController {
         }
     }
 
+    /**
+     * Write object to json file
+     *
+     * @param contact Map<String, Object>
+     */
     private void writeToJson(Map<String, Object> contact) {
         try {
             mapper.writeValue(new FileWriter(jsonFilePath), contact);
@@ -118,6 +149,11 @@ public final class ContactController {
         }
     }
 
+    /**
+     * Read from json file
+     *
+     * @return Map<String, Object>
+     */
     private Map<String, Object> readFromJson() {
         Map<String, Object> existingContacts = null;
         try {
@@ -128,6 +164,11 @@ public final class ContactController {
         return existingContacts;
     }
 
+    /**
+     * Write to binary file
+     *
+     * @param contact Map<String, Object>
+     */
     private void writeToBinary(Map<String, Object> contact) {
         File file = new File(binaryFilePath);
         byte[] data = contact.toString().getBytes(StandardCharsets.UTF_8);
@@ -135,12 +176,17 @@ public final class ContactController {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(data);
 
-            System.out.println("Successfully written bytes to the file: " + Arrays.toString(data));
+            LOGGER.info("Successfully written bytes to the file: " + Arrays.toString(data));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Read from binary file
+     *
+     * @return String
+     */
     private String readFromBinary() {
         Path path = Paths.get(binaryFilePath);
         String contacts = "";
@@ -148,7 +194,7 @@ public final class ContactController {
 
             // Verify file content
             contacts = Files.readString(path);
-            System.out.println("Binary read value: " + contacts);
+            LOGGER.info("Binary read value: " + contacts);
         } catch (IOException e) {
             e.printStackTrace();
         }
