@@ -1,9 +1,13 @@
-package pb.lib.model;
+package pb.lib.controller;
+
+import pb.lib.type.ContactType;
 
 import java.util.UUID;
 
-//POJO
-public class Contact {
+/**
+ * Contact model
+ */
+public final class Contact {
 
     //id
     private UUID id;
@@ -12,8 +16,7 @@ public class Contact {
     private String fullName;
 
     // Work, Cellphone or Home
-    // todo: enum
-    private String type;
+    private ContactType type;
 
     // Contact no
     // todo: number must be unique
@@ -28,8 +31,8 @@ public class Contact {
         return id;
     }
 
-    //ID cannot be set by user
-    protected void setId(UUID id) {
+    //ID cannot be set by user (protected)
+    void setId(UUID id) {
         this.id = id;
     }
 
@@ -41,14 +44,6 @@ public class Contact {
         this.fullName = fullName;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getNumber() {
         return number;
     }
@@ -57,8 +52,17 @@ public class Contact {
         this.number = number;
     }
 
+    public ContactType getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = ContactType.valueOf(type);
+    }
+
+    //used for binary file
     @Override
     public String toString() {
-        return "Contact [id=" + id + ", fullname=" + fullName + ", type=" + type + ", number=" + number + "]";
+        return "Contact [id=" + id + ", fullname= " + fullName + ", type= " + type + ", number= " + number + "]";
     }
 }

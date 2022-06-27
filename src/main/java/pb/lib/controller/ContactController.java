@@ -1,8 +1,6 @@
-package pb.lib;
+package pb.lib.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pb.lib.model.Contact;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +12,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-/*
+import static pb.lib.constants.Keyword.CONTACTS;
+import static pb.lib.util.Utils.getContactList;
+import static pb.lib.util.Utils.getUuidFromString;
+import static pb.lib.validator.Valid.*;
+
+/**
  * Contact controller
  */
 public final class ContactController {
@@ -24,10 +27,14 @@ public final class ContactController {
     private final String binaryFilePath = System.getProperty("user.dir") + "\\contacts.bin";
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String CONTACTS = "contacts";
 
     //create a new contact
     public void create(Contact contact) {
+
+        if (!isValidContact(contact)){
+            return;
+        }
+
         Map<String, Object> contacts = new HashMap<>();
         List<Contact> contactsList = new ArrayList<>();
         contactsList.add(contact);
@@ -99,6 +106,14 @@ public final class ContactController {
         }
     }
 
+    private void writeToJson(Map<String, Object> contact) {
+        try {
+            mapper.writeValue(new FileWriter(jsonFilePath), contact);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Map<String, Object> readFromJson() {
         Map<String, Object> existingContacts = null;
         try {
@@ -107,14 +122,6 @@ public final class ContactController {
             e.printStackTrace();
         }
         return existingContacts;
-    }
-
-    private void writeToJson(Map<String, Object> contact) {
-        try {
-            mapper.writeValue(new FileWriter(jsonFilePath), contact);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void writeToBinary(Map<String, Object> contact) {
@@ -142,14 +149,5 @@ public final class ContactController {
             e.printStackTrace();
         }
         return contacts;
-    }
-
-    private UUID getUuidFromString(String contactId) {
-        return UUID.fromString(contactId);
-    }
-
-    private List<Contact> getContactList(Map<String, Object> allContacts) {
-        return mapper.convertValue(allContacts.get(CONTACTS), new TypeReference<>() {
-        });
     }
 }
