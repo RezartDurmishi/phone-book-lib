@@ -3,9 +3,15 @@ package pb.lib;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public final class ContactController {
@@ -109,21 +115,25 @@ public final class ContactController {
         File file = new File(binaryFilePath);
         byte[] data = contact.toString().getBytes(StandardCharsets.UTF_8);
 
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            ObjectOutputStream outputStream = new ObjectOutputStream(fos);
-            outputStream.write(data);
+        try (FileOutputStream fos = new FileOutputStream(file))
+        {
+            fos.write(data);
+
+            System.out.println("Successfully written bytes to the file: " + Arrays.toString(data));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Object readFromBinary() {
-        Object contacts = null;
-        try (FileInputStream fileInputStreams = new FileInputStream(binaryFilePath)) {
-            ObjectInputStream inputStream = new ObjectInputStream(fileInputStreams);
+    private String readFromBinary() {
+        Path path = Paths.get(binaryFilePath);
+        String contacts = "";
+        try {
 
-            contacts = inputStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+            // Verify file content
+            contacts = Files.readString(path);
+            System.out.println("Binary read value: " + contacts);
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return contacts;
