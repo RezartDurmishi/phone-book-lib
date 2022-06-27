@@ -133,6 +133,7 @@ public final class ContactController {
             contactList.remove(contactToDelete.get());
             allContacts.put(CONTACTS, contactList);
             writeToJson(allContacts);
+            LOGGER.info("Contact deleted successfully.");
         }
     }
 
