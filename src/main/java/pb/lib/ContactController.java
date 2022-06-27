@@ -2,6 +2,7 @@ package pb.lib;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pb.lib.model.Contact;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,9 +12,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+/*
+ * Contact controller
+ */
 public final class ContactController {
 
     //file paths
@@ -48,6 +51,9 @@ public final class ContactController {
     //update contact by id
     public void update(Contact contact, String contactId) {
         UUID id = getUuidFromString(contactId);
+
+        //set the existing id before updating
+        contact.setId(id);
 
         if (!new File(jsonFilePath).isFile()) {
             return;
@@ -115,8 +121,7 @@ public final class ContactController {
         File file = new File(binaryFilePath);
         byte[] data = contact.toString().getBytes(StandardCharsets.UTF_8);
 
-        try (FileOutputStream fos = new FileOutputStream(file))
-        {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(data);
 
             System.out.println("Successfully written bytes to the file: " + Arrays.toString(data));

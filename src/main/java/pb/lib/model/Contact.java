@@ -1,4 +1,4 @@
-package pb.lib;
+package pb.lib.model;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class Contact {
     }
 
     //ID cannot be set by user
-    private void setId(UUID id) {
+    protected void setId(UUID id) {
         this.id = id;
     }
 
