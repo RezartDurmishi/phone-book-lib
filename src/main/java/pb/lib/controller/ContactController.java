@@ -58,6 +58,7 @@ public final class ContactController {
         //only on file initialization
         if (!Paths.get(jsonFilePath).toFile().exists()) {
             writeToJson(contacts);
+            LOGGER.info("New contact created successfully.");
             return;
         }
 
@@ -105,6 +106,8 @@ public final class ContactController {
             contactsJson.put(CONTACTS, contactList);
             writeToJson(contactsJson);
             LOGGER.info("Contact updated successfully.");
+        } else {
+            LOGGER.info("Contact not found.");
         }
     }
 
@@ -124,6 +127,7 @@ public final class ContactController {
         List<Contact> contactList = getContactList(allContacts);
 
         if (contactList.isEmpty()) {
+            LOGGER.info("Contact list is empty.");
             return;
         }
 
@@ -134,6 +138,8 @@ public final class ContactController {
             allContacts.put(CONTACTS, contactList);
             writeToJson(allContacts);
             LOGGER.info("Contact deleted successfully.");
+        } else {
+            LOGGER.info("Contact not found.");
         }
     }
 

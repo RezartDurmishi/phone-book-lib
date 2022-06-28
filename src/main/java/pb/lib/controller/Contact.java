@@ -59,7 +59,7 @@ public final class Contact {
     }
 
     public void setType(String type) {
-        if (!isValidContactType(type)){
+        if (!isValidContactType(type)) {
             this.type = null;
             return;
         }
